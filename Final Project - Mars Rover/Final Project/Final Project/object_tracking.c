@@ -58,10 +58,13 @@ void initializations(obstacle* obst, robot* bot) {
 	obst->validation_level = 0;
 	
 	/* Robot Coordinates Initialization */
-	bot->x = 0;
-	bot->y = 0;
-	bot->angle = 0.0;
-	bot->dist_traveled = 0;
+	if (bot->initialized == 0) {
+		bot->x = 0;
+		bot->y = 0;
+		bot->angle = 90.0;
+		bot->dist_traveled = 0;
+		bot->initialized ^= 1;
+	}
 	
 	/* Goal Post Variables to Analyze
 	obst->goal_post_index = 0; // Amount of goal posts found. There are 4 posts total so 3 bits will suffice.
@@ -151,9 +154,7 @@ void reset(obstacle* obst, robot* bot) {
 	initializations(obst, bot); // reinitialize
 	for (int i = 0; i < 15; i++) { // reset object arrays
 		for (int j = 0; j < 7; j++) {
-			if (j < 5) {
-				obst->all_objects_array[i][j] = 0;
-			}
+			obst->all_objects_array[i][j] = 0;
 		}
 	}
 }
@@ -179,8 +180,8 @@ void find_objs_IR(obstacle* obst, robot* bot) {
 			obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_IR] = obst->total_dist_IR / (obst->validation_level - 1); // IR Distance = Average = Sum/N (total distance/number of distance measurements), where validation level serves as N - 1 (to account for extra sample at line 113)
 			obst->all_objects_array[obst->all_object_index][ALL_LINEAR_WIDTH] = get_linear_width(obst); // Log calculated linear width
 			obst->all_objects_array[obst->all_object_index][ALL_POSITION] = (obst->start_angle_IR + (obst->all_objects_array[obst->all_object_index][ALL_ANGULAR_WIDTH] / 2)); // Log calculated object angular position
-			obst->all_objects_array[obst->all_object_index][ALL_X] = bot->x + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * cos(obst->all_objects_array[obst->all_object_index][ALL_POSITION]); // Assign X coordinate of object in respect to the bot
-			obst->all_objects_array[obst->all_object_index][ALL_Y] = bot->y + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * sin(obst->all_objects_array[obst->all_object_index][ALL_POSITION]); // Assign Y coordinate of object in respect to the bot
+			obst->all_objects_array[obst->all_object_index][ALL_X] = bot->x + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * cos(obst->all_objects_array[obst->all_object_index][ALL_POSITION] * (3.141516/180)); // Assign X coordinate of object in respect to the bot
+			obst->all_objects_array[obst->all_object_index][ALL_Y] = bot->y + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * sin(obst->all_objects_array[obst->all_object_index][ALL_POSITION] * (3.141516/180)); // Assign Y coordinate of object in respect to the bot
 			obst->all_object_index++; // Move to next index
 			obst->validation_level = 0; // Reset validation level
 		}
@@ -261,9 +262,13 @@ void find_closest_obj(obstacle* obst) {
 }
 
 void print_and_process_stats(obstacle* obst) {
-	char buffer[500];
+	if (obst->all_object_index > 0) {
+		char buffer[500];
 	
-	/* Prepare buffer for transmission */
-	sprintf(buffer, "\r\n\nObjects found: %d\r\n\nClosest Object Statistics:\r\nObject position: %.1f degrees\r\nSONAR distance (cm): %d\r\nIR distance (cm): %d\r\nAngular width: %d\r\nLinear width (cm): %d\r\n\nSmallest Object Statistics:\r\nObject position: %.1f degrees\r\nSONAR distance (cm): %d\r\nIR distance (cm): %d\r\nAngular width: %d\r\nLinear width (cm): %d\r\n", obst->all_object_index, obst->closest_obj_position, obst->closest_obj_dist_SONAR, obst->closest_obj_dist_IR, obst->closest_obj_angular_size, obst->closest_obj_linear_size, obst->smallest_obj_position, obst->smallest_obj_dist_SONAR, obst->smallest_obj_dist_IR, obst->smallest_obj_angular_size, obst->smallest_obj_linear_size);
-	send_message(buffer);
+		/* Prepare buffer for transmission */
+		sprintf(buffer, "\r\n\nObjects found: %d\r\n\nClosest Object Statistics:\r\nObject position: %.1f degrees\r\nSONAR distance (cm): %d\r\nIR distance (cm): %d\r\nAngular width: %d\r\nLinear width (cm): %d\r\n\nSmallest Object Statistics:\r\nObject position: %.1f degrees\r\nSONAR distance (cm): %d\r\nIR distance (cm): %d\r\nAngular width: %d\r\nLinear width (cm): %d\r\n", obst->all_object_index, obst->closest_obj_position, obst->closest_obj_dist_SONAR, obst->closest_obj_dist_IR, obst->closest_obj_angular_size, obst->closest_obj_linear_size, obst->smallest_obj_position, obst->smallest_obj_dist_SONAR, obst->smallest_obj_dist_IR, obst->smallest_obj_angular_size, obst->smallest_obj_linear_size);
+		send_message(buffer);
+	} else {
+		send_message("\r\nNo objects found\r\n");
+	}
 }

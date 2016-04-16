@@ -93,7 +93,7 @@ typedef struct {
 	volatile char obst_index : 3; // Amount of goal posts found. There are 4 posts total so 3 bits will suffice.*/
 	
 	/*Object Array Variables */
-	volatile char all_objects_array[15][7]; // 15 objects total, each with 9 parameters (Angular width, linear width, distance_sonar, distance_ir, angular position in respect to the bot, x & y coordinate)
+	volatile int all_objects_array[15][7]; // 15 objects total, each with 9 parameters (Angular width, linear width, distance_sonar, distance_ir, angular position in respect to the bot, x & y coordinate)
 	volatile char all_object_index : 4;                  // Max amount of objects is ~14
 	
 	
@@ -105,6 +105,7 @@ typedef struct
 	float y;
 	float angle;
 	float dist_traveled; // cm
+	char initialized : 1; // True or False
 	
 } robot;
 

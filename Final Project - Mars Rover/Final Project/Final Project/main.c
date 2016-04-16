@@ -22,6 +22,7 @@ int main(void)
 	obstacle obst;
 	robot bot;
     oi_t *sensor_data = oi_alloc();
+	bot.initialized = 0; // Has to be called only once and before reset
 	reset(&obst, &bot);
     oi_init(sensor_data);
 	
@@ -120,20 +121,26 @@ void move(oi_t *self, float distance_mm, robot *bot) { // Find more accurate way
 }
 
 void rotate(oi_t *self, float degrees, robot* bot) {
-		float sensordegrees = degrees/1.13; //calibration: make number smaller to oversteer.
+		float sensordegrees = degrees/1.1; //calibration: make number smaller to oversteer.
 		float toturn = 0;
-		bot->angle += fmod(degrees, 360);
 		
+		bot->angle += degrees;
+		
+		if (bot->angle < 0) {
+			bot->angle = 360 + bot->angle;
+		} else if (bot->angle > 360) {
+			bot->angle = bot->angle - 360;
+		}
 		
 		if (degrees > 0){ //rotate CCW
-			oi_set_wheels(150,-150);
+			oi_set_wheels(100,-100);
 			while (toturn < sensordegrees) {
 				oi_update(self);
 				toturn += self->angle;
 			}
 		}
 		if (degrees < 0){ //rotate CW
-			oi_set_wheels(-150,150);
+			oi_set_wheels(-100,100);
 			while (toturn > sensordegrees) {
 				oi_update(self);
 				toturn += self->angle;
