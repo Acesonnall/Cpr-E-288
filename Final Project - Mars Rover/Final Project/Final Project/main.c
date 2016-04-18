@@ -10,55 +10,27 @@
 #include "open_interface.h"
 #include "util.h"
 #include "lcd.h"
-#include "ai.h"
+#include "main.h"
 #include <math.h>
-
-// Prototypes
-void move(oi_t *self, float distance_mm, robot *bot);
-void rotate(oi_t *self, float degrees, robot *bot);
 
 int main(void)
 {
+	control c;
 	obstacle obst;
 	robot bot;
     oi_t *sensor_data = oi_alloc();
 	bot.initialized = 0; // Has to be called only once and before reset
-	reset(&obst, &bot);
+	reset(&obst, &bot, &c);
     oi_init(sensor_data);
-	
-	char dist_to_travel = 15; // cm
-	char angle_to_turn = 45;  // degrees
-	
-	unsigned char current;
-	unsigned char num_notes = 3;
-	unsigned char notes[] = {36, 36, 36};
-	unsigned char duration[] = {15, 15, 15};
 	
 	while (1) {
 		oi_update(sensor_data);
-		/*lprintf("Cliff L: %d\nCliff Front L: %d\nCliff Front R: %d\nCliff R: %d", sensor_data->cliff_left_signal, sensor_data->cliff_frontleft_signal, sensor_data->cliff_frontright_signal, sensor_data->cliff_right_signal);
-		lprintf("Cliff L: %d\nCliff Front L: %d\nCliff Front R: %d\nCliff R: %d", sensor_data->cliff_left, sensor_data->cliff_frontleft, sensor_data->cliff_frontright, sensor_data->cliff_right);
-		wait_ms(100);*/
 		
-		current = USART_Receive();
+		c.user_command = USART_Receive();
 		
-		if (current == 'w') {
-			move(sensor_data, dist_to_travel, &bot);
-			update_information(&obst, &bot, sensor_data);
-		} else if (current == 'a') {
-			rotate(sensor_data, angle_to_turn, &bot);
-		} else if (current == 'd') {
-			rotate(sensor_data, -angle_to_turn, &bot);
-		} else if (current == 'q') {
-			sweep(&obst, &bot);
-			print_and_process_stats(&obst);
-			reset(&obst, &bot);
-		} else {
-			oi_load_song(2, num_notes, notes, duration);
-			oi_play_song(2);
-		}
+		get_command(c, &obst, sensor_data, &bot);
 		
-		USART_Transmit(current);
+		USART_Transmit(c.user_command);
 	}
 	
 	return 0;
@@ -128,7 +100,7 @@ void rotate(oi_t *self, float degrees, robot* bot) {
 		
 		if (bot->angle < 0) {
 			bot->angle = 360 + bot->angle;
-		} else if (bot->angle > 360) {
+			} else if (bot->angle > 360) {
 			bot->angle = bot->angle - 360;
 		}
 		
@@ -148,3 +120,57 @@ void rotate(oi_t *self, float degrees, robot* bot) {
 		}
 		oi_set_wheels(0, 0); // stop
 }
+
+void get_command(control c, obstacle* obst, oi_t *self, robot* bot) {
+	if (c.user_command == 'w') {
+		move(self, c.travel_dist, bot);
+	} else if (c.user_command == 'a') {
+		rotate(self, c.angle_to_turn, bot);
+	} else if (c.user_command == 'd') {
+		rotate(self, -c.angle_to_turn, bot);
+	} else if (c.user_command == 'q') {
+		sweep(obst, bot);
+		print_and_process_stats(obst);
+		reset(obst, bot, &c);
+	} else {
+		oi_load_song(c.s1_id, c.s1_num_notes, c.s1_notes, c.s1_duration);
+		oi_play_song(c.s1_id);
+	}
+	update_information(obst, bot, self);
+}
+
+void read_cliff_sensors(oi_t *self) {
+	lprintf("Cliff L: %d\nCliff Front L: %d\nCliff Front R: %d\nCliff R: %d", self->cliff_left_signal, self->cliff_frontleft_signal, self->cliff_frontright_signal, self->cliff_right_signal);
+	//lprintf("Cliff L: %d\nCliff Front L: %d\nCliff Front R: %d\nCliff R: %d", self->cliff_left, self->cliff_frontleft, self->cliff_frontright, self->cliff_right);
+	wait_ms(100);
+}
+
+/*void rendezvous(obstacle* obst, robot* bot) {
+	char can_complete_rendevous = 0; // 0: No, 1: Yes
+	if (obst->all_object_index > 0) {
+		Fill Goal Post Array
+		for (int i = 0; i < obst->all_object_index; i++) {
+			if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] > SMALL_OBJECT_SIZE_MAX)
+				continue;
+			obst->goal_post_array[obst->goal_post_index][0] = obst->all_objects_array[i][ALL_X];
+			obst->goal_post_array[obst->goal_post_index][1] = obst->all_objects_array[i][ALL_Y];	
+			obst->goal_post_index++;
+		}
+		
+		for (int i = 0; i < obst->all_object_index; i++) {
+			Is There An Object In The Way?
+			if (obst->all_object_index[])
+		}
+		
+	}
+	
+	if (!can_complete_rendevous) {
+		Reset Map
+		for (int i = 0; i < obst->goal_post_index; i++) {
+			obst->goal_post_array[i][0] = 0;
+			obst->goal_post_array[i][1] = 0;
+		}
+		obst->goal_post_index = 0;
+		send_message("\r\nCannot find rendezvous point!\r\n");
+	}
+}*/

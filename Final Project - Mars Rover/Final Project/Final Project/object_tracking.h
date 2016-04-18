@@ -13,7 +13,7 @@
 #define UBRR FOSC/8/(BAUDBLUETOOTH-1) // Bluetooth Connection
 
 /* Measurable Gap */
-#define MAX_DETECTION_DISTANCE 80 // cm
+#define MAX_DETECTION_DISTANCE 50 // cm
 #define MIN_DETECTION_DISTANCE 10 // cm
 
 /* Object Linear Widths */
@@ -84,16 +84,16 @@ typedef struct {
 	/* Object Validation Level Variable */
 	volatile char validation_level; // Validation level probably won't exceed 5 bits.
 	
-	/* Goal Post Variables to Analyze | Used in ai.c
-	volatile char goal_post_array[4][7]; // Each column stores information about the goal posts (4 total) distance, angular position, and compass direction
+	/* Goal Post Variables to Analyze | Used in ai.c */
+	volatile float goal_post_array[4][2]; // Each column stores information about the goal posts (4 total) distance, angular position, and compass direction
 	volatile char goal_post_index : 3; // Amount of goal posts found. There are 4 posts total so 3 bits will suffice.
 	
-	Obstacle Variables to Analyze | Used in ai.c
+	/* Obstacle Variables to Analyze | Used in ai.c
 	volatile char obst_array[11][7]; // Each column stores information about the objects (11 total) distance, angular position, and compass direction
 	volatile char obst_index : 3; // Amount of goal posts found. There are 4 posts total so 3 bits will suffice.*/
 	
 	/*Object Array Variables */
-	volatile int all_objects_array[15][7]; // 15 objects total, each with 9 parameters (Angular width, linear width, distance_sonar, distance_ir, angular position in respect to the bot, x & y coordinate)
+	volatile float all_objects_array[30][7]; // 15 objects total (30 to account for cliffs and bumper-detected objects), each with 9 parameters (Angular width, linear width, distance_sonar, distance_ir, angular position in respect to the bot, x & y coordinate)
 	volatile char all_object_index : 4;                  // Max amount of objects is ~14
 	
 	
@@ -109,11 +109,24 @@ typedef struct
 	
 } robot;
 
+typedef struct {
+	char user_command;
+	
+	char travel_dist : 4;
+	char angle_to_turn : 6;
+	
+	/* Song 1 */
+	unsigned char s1_id : 1;
+	unsigned char s1_num_notes : 2;
+	unsigned char s1_notes[3];
+	unsigned char s1_duration[3];
+} control;
+
 /************************************************************************/
 /* Prepares LCD, IR, SONAR, Servo, USART, and object detection          */
 /* structure                                                            */
 /************************************************************************/
-void initializations(obstacle* obst, robot* bot);
+void initializations(obstacle* obst, robot* bot, control* c);
 
 /************************************************************************/
 /* Perform 180 degree sweep, finding the smallest and closest object in */
@@ -135,7 +148,7 @@ void update_information(obstacle* obst, robot* bot, oi_t* self);
 /************************************************************************/
 /* Re-initialize everything and clear the object array                  */
 /************************************************************************/
-void reset(obstacle* obst, robot* bot);
+void reset(obstacle* obst, robot* bot, control* c);
 
 /************************************************************************/
 /* Find the smallest object out of the found objects                    */
@@ -161,3 +174,5 @@ void find_closest_obj(obstacle* obst);
 /* Show and tell, baby                                                  */
 /************************************************************************/
 void print_and_process_stats(obstacle* obst);
+
+char find_dupilicate(obstacle* obst, robot* bot);

@@ -13,7 +13,7 @@
 #include "util.h"
 #include "object_tracking.h"
 
-void initializations(obstacle* obst, robot* bot) {
+void initializations(obstacle* obst, robot* bot, control* c) {
 	obst->degrees = 0.0; // Start angle at 0
 	
 	lcd_init();               // Initialize LCD
@@ -25,51 +25,61 @@ void initializations(obstacle* obst, robot* bot) {
 	wait_ms(500);             // Wait for Servo to settle
 	
 	/* IR Variable Initializations */
-	obst->cur_dist_IR = 0;
-	obst->last_dist_IR = 0;
-	obst->total_dist_IR = 0;
-	obst->start_angle_IR = 0;
-	obst->end_angle_IR = 0;
-	obst->object_detected = 0; // Using ^= to toggle breaks program if used a lot. Why?
-	obst->all_object_index = 0;
-	obst->cur_obj_size_IR = 20;
+	obst->cur_dist_IR = 0.0;
+	obst->last_dist_IR = 0.0;
+	obst->total_dist_IR = 0.0;
+	obst->start_angle_IR = 0.0;
+	obst->end_angle_IR = 0.0;
+	obst->object_detected = 0.0; // Using ^= to toggle breaks program if used a lot. Why?
+	//obst->all_object_index = 0.0;
+	obst->cur_obj_size_IR = 20.0;
 	
 	/* SONAR Variable Initializations */
 	obst->cur_dist_SONAR = 0.0;
 	obst->last_dist_SONAR = 0.0;
-	obst->start_dist_SONAR = 0;
-	obst->end_dist_SONAR = 0;
+	obst->start_dist_SONAR = 0.0;
+	obst->end_dist_SONAR = 0.0;
 	
 	/* Smallest Object Variable Initializations */
-	obst->smallest_obj_angular_size = 50;
+	obst->smallest_obj_angular_size = 50.0;
 	obst->smallest_obj_linear_size = LARGE_OBJECT_SIZE_MIN;
-	obst->smallest_obj_dist_SONAR = 0;
-	obst->smallest_obj_dist_IR = 0;
+	obst->smallest_obj_dist_SONAR = 0.0;
+	obst->smallest_obj_dist_IR = 0.0;
 	obst->smallest_obj_position = 0.0;
 	
 	/* Closest Object Variable Initializations */
-	obst->closest_obj_angular_size = 0;
-	obst->closest_obj_linear_size = 0;
-	obst->closest_obj_dist_SONAR = 341; // Approximate SONAR Range Limit
-	obst->closest_obj_dist_IR = 2752;   // Approximate IR Range Limit
+	obst->closest_obj_angular_size = 0.0;
+	obst->closest_obj_linear_size = 0.0;
+	obst->closest_obj_dist_SONAR = 341.0; // Approximate SONAR Range Limit
+	obst->closest_obj_dist_IR = 2752.0;   // Approximate IR Range Limit
 	obst->closest_obj_position = 0.0;
 	
 	/* Object Validation Level Initialization */
-	obst->validation_level = 0;
+	obst->validation_level = 0.0;
 	
 	/* Robot Coordinates Initialization */
 	if (bot->initialized == 0) {
-		bot->x = 0;
-		bot->y = 0;
+		bot->x = 0.0;
+		bot->y = 0.0;
 		bot->angle = 90.0;
-		bot->dist_traveled = 0;
+		bot->dist_traveled = 0.0;
 		bot->initialized ^= 1;
 	}
 	
-	/* Goal Post Variables to Analyze
+	/* Main Initializations */
+	c->travel_dist = 15;   // cm
+	c->angle_to_turn = 45; // degrees
+	c->s1_id = 1;
+	c->s1_num_notes = 3;
+	for (int i = 0; i < c->s1_num_notes; i++) {
+		c->s1_notes[i] = 36;
+		c->s1_duration[i] = 15;
+	}
+	
+	/* Goal Post Variables to Analyze */
 	obst->goal_post_index = 0; // Amount of goal posts found. There are 4 posts total so 3 bits will suffice.
 	
-	Obstacle Variables to Analyze
+	/*Obstacle Variables to Analyze
 	obst->obst_index = 0; // Amount of goal posts found. There are 4 posts total so 3 bits will suffice.*/
 	
 	// Note: Object array does not need to be initialized
@@ -118,45 +128,52 @@ char get_linear_width(obstacle* obst) {
 }
 
 void update_information(obstacle* obst, robot* bot, oi_t* self) {
+	char buffer[50];
 	bot->x = bot->x + bot->dist_traveled * cos(bot->angle * (3.141516/180)); // Update robot x coordinate
 	bot->y = bot->y + bot->dist_traveled * sin(bot->angle * (3.141516/180)); // Update robot y coordinate
 	
 	if (obst->all_object_index > 0) { // Are there objects to keep track of? If so, update the objects distance and angle in respect to the robot
 		for (int i = 0; i < obst->all_object_index; i++) { // Loop through total detected objects
 			obst->all_objects_array[i][ALL_DISTANCE_SONAR] = sqrt( pow(bot->x - obst->all_objects_array[i][ALL_X], 2) + pow(bot->y - obst->all_objects_array[i][ALL_Y], 2) ); // Apply distance formula
-			obst->all_objects_array[i][ALL_POSITION] = atan( (obst->all_objects_array[i][ALL_Y] - bot->y) / (obst->all_objects_array[i][ALL_X] - bot->x) ); // Apply formula to find theta
+			
+			if (obst->all_objects_array[i][ALL_X] < 0 || (obst->all_objects_array[i][ALL_X] < 0 && obst->all_objects_array[i][ALL_Y] < 0) ) { // Quadrant II or Quadrant III: Add 180°
+				obst->all_objects_array[i][ALL_POSITION] = atan( ((obst->all_objects_array[i][ALL_Y] - bot->y) / (obst->all_objects_array[i][ALL_X] - bot->x))) * (180/3.141516) + 180; // Apply formula (arctan ( y / x )) to find theta
+			} else if (obst->all_objects_array[i][ALL_Y] < 0 && obst->all_objects_array[i][ALL_X] > 0) {                                      // Quadrant IV: Add 360°
+				obst->all_objects_array[i][ALL_POSITION] = atan( ((obst->all_objects_array[i][ALL_Y] - bot->y) / (obst->all_objects_array[i][ALL_X] - bot->x))) * (180/3.141516) + 360; // Apply formula (arctan ( y / x )) to find theta
+			} else {                                                                                                                          // Quadrant I: Use calculator 
+				obst->all_objects_array[i][ALL_POSITION] = atan( ((obst->all_objects_array[i][ALL_Y] - bot->y) / (obst->all_objects_array[i][ALL_X] - bot->x))) * (180/3.141516);       // Apply formula (arctan ( y / x )) to find theta
+			}
+			
+			if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] > SMALL_OBJECT_SIZE_MAX) {
+				sprintf(buffer, "\r\nObstacle %d Coordinates: (%lf, %lf)\r\n", i, obst->all_objects_array[i][ALL_X], obst->all_objects_array[i][ALL_Y]);
+				send_message(buffer);
+				sprintf(buffer, "\r\nObstacle %d Distance: %lf | Position %lf", i, obst->all_objects_array[i][ALL_DISTANCE_SONAR], obst->all_objects_array[i][ALL_POSITION]);
+				send_message(buffer);
+			} else {
+				sprintf(buffer, "\r\nGoal Post %d Coordinates: (%lf, %lf)\r\n", i, obst->all_objects_array[i][ALL_X], obst->all_objects_array[i][ALL_Y]);
+				send_message(buffer);
+				sprintf(buffer, "\r\nGoal Post %d Distance: %lf | Position %lf", i, obst->all_objects_array[i][ALL_DISTANCE_SONAR], obst->all_objects_array[i][ALL_POSITION]);
+				send_message(buffer);
+			}
 		}
 	}
 	
-	char buffer[50];
 	sprintf(buffer, "\r\nBot X: %.3lf\r\nBot Y: %.3lf\r\nBot Angle: %.3lf\r\n", bot->x, bot->y, bot->angle);
-	
 	send_message(buffer);
+	
 	// Do not reset the angle. Bot needs to know where it was last angled to be accurate.
 	bot->dist_traveled = 0; // Reset for next run
 }
 
-/*float toRad(float deg){
-	return (deg*3.14159265)/180;
-}*/
-
-/*char getX(obstacle* obst, robot* bot){
-	return (char) obst->cur_dist_IR * cos(toRad((obst->start_angle_IR + obst->end_angle_IR)/2));
-}*/
-
-/*char getY(obstacle* obst, robot* bot){
-	return (char) obst->cur_dist_IR * sin(toRad((obst->start_angle_IR + obst->end_angle_IR)/2));
-}*/
-
-void reset(obstacle* obst, robot* bot) {
+void reset(obstacle* obst, robot* bot, control* c) {
 	obst->degrees = 0.0;
 	move_servo(&obst->degrees);
-	initializations(obst, bot); // reinitialize
-	for (int i = 0; i < 15; i++) { // reset object arrays
+	initializations(obst, bot, c); // reinitialize
+	/*for (int i = 0; i < 15; i++) { // reset object arrays
 		for (int j = 0; j < 7; j++) {
 			obst->all_objects_array[i][j] = 0;
 		}
-	}
+	}*/
 }
 
 void find_objs_IR(obstacle* obst, robot* bot) {
@@ -171,7 +188,7 @@ void find_objs_IR(obstacle* obst, robot* bot) {
 			obst->total_dist_IR += obst->cur_dist_IR; // Find total distance measured by IR
 		}
 		} else {
-		if ((obst->object_detected == 1 && obst->validation_level >= SMALL_OBJECT_SIZE_MIN)) { // We've finished seeing the object. Is the object valid (at least as big as smallest object size)?
+		if ((obst->object_detected == 1 && obst->validation_level >= SMALL_OBJECT_SIZE_MIN) && find_dupilicate(obst, bot)) { // We've finished seeing the object. Is the object valid (at least as big as smallest object size)?
 			obst->end_angle_IR = obst->degrees - 1; // Log the last measured angle
 			obst->end_dist_SONAR = obst->last_dist_SONAR; // Log the last distance measured by the sonar as end distance (same reason as before)
 			obst->object_detected = 0; // Reset detection variable
@@ -180,8 +197,13 @@ void find_objs_IR(obstacle* obst, robot* bot) {
 			obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_IR] = obst->total_dist_IR / (obst->validation_level - 1); // IR Distance = Average = Sum/N (total distance/number of distance measurements), where validation level serves as N - 1 (to account for extra sample at line 113)
 			obst->all_objects_array[obst->all_object_index][ALL_LINEAR_WIDTH] = get_linear_width(obst); // Log calculated linear width
 			obst->all_objects_array[obst->all_object_index][ALL_POSITION] = (obst->start_angle_IR + (obst->all_objects_array[obst->all_object_index][ALL_ANGULAR_WIDTH] / 2)); // Log calculated object angular position
-			obst->all_objects_array[obst->all_object_index][ALL_X] = bot->x + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * cos(obst->all_objects_array[obst->all_object_index][ALL_POSITION] * (3.141516/180)); // Assign X coordinate of object in respect to the bot
-			obst->all_objects_array[obst->all_object_index][ALL_Y] = bot->y + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * sin(obst->all_objects_array[obst->all_object_index][ALL_POSITION] * (3.141516/180)); // Assign Y coordinate of object in respect to the bot
+			if (bot->angle - 90 + obst->all_objects_array[obst->all_object_index][ALL_POSITION] > 360) {
+				obst->all_objects_array[obst->all_object_index][ALL_X] = bot->x + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * cos((bot->angle - 90 + obst->all_objects_array[obst->all_object_index][ALL_POSITION] - 360) * (3.141516/180));
+				obst->all_objects_array[obst->all_object_index][ALL_Y] = bot->y + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * sin((bot->angle - 90 + obst->all_objects_array[obst->all_object_index][ALL_POSITION]) * (3.141516/180));
+			} else {
+				obst->all_objects_array[obst->all_object_index][ALL_X] = bot->x + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * cos((bot->angle - 90 + obst->all_objects_array[obst->all_object_index][ALL_POSITION]) * (3.141516/180)); // Assign X coordinate of object in respect to the bot
+				obst->all_objects_array[obst->all_object_index][ALL_Y] = bot->y + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * sin((bot->angle - 90 + obst->all_objects_array[obst->all_object_index][ALL_POSITION]) * (3.141516/180)); // Assign Y coordinate of object in respect to the bot	
+			}
 			obst->all_object_index++; // Move to next index
 			obst->validation_level = 0; // Reset validation level
 		}
@@ -197,48 +219,6 @@ void find_objs_IR(obstacle* obst, robot* bot) {
 	obst->last_dist_SONAR = obst->cur_dist_SONAR; // Remember last measured SONAR distance
 }
 
-/*void analyze_found_objects(obstacle* obst) {
-	// Break objects into distinguished categories
-	for (int i = 0; i < obst->all_object_index; i++) {
-		if ((obst->all_objects_array[i][ALL_LINEAR_WIDTH] >= SMALL_OBJECT_SIZE_MIN && obst->all_objects_array[i][ALL_LINEAR_WIDTH] <= SMALL_OBJECT_SIZE_MAX)) {
-			obst->goal_post_array[obst->goal_post_index][GOALP_DISTANCE] = obst->all_objects_array[i][ALL_DISTANCE_SONAR]; // Log the distance between the post and the bot
-			obst->goal_post_array[obst->goal_post_index++][GOALP_POSITION] = obst->all_objects_array[i][ALL_POSITION];     // Log the position between the post and the bot
-		} else if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] >= MEDIUM_OBJECT_SIZE_MIN && obst->all_objects_array[i][ALL_LINEAR_WIDTH] <= LARGE_OBJECT_SIZE_MAX) {
-			obst->obst_array[obst->obst_index][OBST_DISTANCE] = obst->all_objects_array[i][ALL_DISTANCE_SONAR];            // Log the distance between the obstacle and the bot
-			obst->obst_array[obst->obst_index++][OBST_POSITION] = obst->all_objects_array[i][ALL_POSITION];                // Log the position between the obstacle and the bot
-		}
-	}
-	
-	// Parse Relative Location of Goal Posts(s)
-	for (int i = 0; i < obst->goal_post_index; i++) {
-		if (obst->goal_post_array[i][GOALP_POSITION] > 0 && obst->goal_post_array[i][GOALP_POSITION] <= 30) {
-			obst->goal_post_array[i][EAST] = 1;
-		} else if (obst->goal_post_array[i][GOALP_POSITION] > 30 && obst->goal_post_array[i][GOALP_POSITION] <= 60) {
-			obst->goal_post_array[i][NORTH_EAST] = 1;
-		} else if (obst->goal_post_array[i][GOALP_POSITION] > 60 && obst->goal_post_array[i][GOALP_POSITION] < 120) {
-			obst->goal_post_array[i][NORTH] = 1;
-		} else if (obst->goal_post_array[i][GOALP_POSITION] > 120 && obst->goal_post_array[i][GOALP_POSITION] <= 150) {
-			obst->goal_post_array[i][NORTH_WEST] = 1;
-		} else if (obst->goal_post_array[i][GOALP_POSITION] > 150 && obst->goal_post_array[i][GOALP_POSITION] <= 180) {
-			obst->goal_post_array[i][WEST] = 1;
-		}
-	}
-	
-	// Parse Relative Location of Obstacle(s)
-	for (int i = 0; i < obst->obst_index; i++) {
-		if (obst->obst_array[i][OBST_POSITION] > 0 && obst->obst_array[i][OBST_POSITION] <= 30) {
-			obst->obst_array[i][EAST] = 1;
-		} else if (obst->obst_array[i][OBST_POSITION] > 30 && obst->obst_array[i][OBST_POSITION] <= 60) {
-			obst->obst_array[i][NORTH_EAST] = 1;
-		} else if (obst->obst_array[i][OBST_POSITION] > 60 && obst->obst_array[i][OBST_POSITION] < 120) {
-			obst->obst_array[i][NORTH] = 1;
-		} else if (obst->obst_array[i][OBST_POSITION] > 120 && obst->obst_array[i][OBST_POSITION] <= 150) {
-			obst->obst_array[i][NORTH_WEST] = 1;
-		} else if (obst->obst_array[i][OBST_POSITION] > 150 && obst->obst_array[i][OBST_POSITION] <= 180) {
-			obst->obst_array[i][WEST] = 1;
-		}
-	}
-}*/
 void find_smallest_obj(obstacle* obst) {
 	for (int i = 0; i < obst->all_object_index; i++)
 	if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] < obst->smallest_obj_angular_size) {
@@ -266,9 +246,34 @@ void print_and_process_stats(obstacle* obst) {
 		char buffer[500];
 	
 		/* Prepare buffer for transmission */
-		sprintf(buffer, "\r\n\nObjects found: %d\r\n\nClosest Object Statistics:\r\nObject position: %.1f degrees\r\nSONAR distance (cm): %d\r\nIR distance (cm): %d\r\nAngular width: %d\r\nLinear width (cm): %d\r\n\nSmallest Object Statistics:\r\nObject position: %.1f degrees\r\nSONAR distance (cm): %d\r\nIR distance (cm): %d\r\nAngular width: %d\r\nLinear width (cm): %d\r\n", obst->all_object_index, obst->closest_obj_position, obst->closest_obj_dist_SONAR, obst->closest_obj_dist_IR, obst->closest_obj_angular_size, obst->closest_obj_linear_size, obst->smallest_obj_position, obst->smallest_obj_dist_SONAR, obst->smallest_obj_dist_IR, obst->smallest_obj_angular_size, obst->smallest_obj_linear_size);
+		sprintf(buffer, "\r\n\nObjects found: %d\r\n\nClosest Object Statistics:\r\nObject position: %.1f degrees\r\nSONAR distance (cm): %d\r\nIR distance (cm): %d\r\nAngular width: %d\r\nLinear width (cm): %d\r\n\nSmallest Object Statistics:\r\nObject position: %.1lf degrees\r\nSONAR distance (cm): %d\r\nIR distance (cm): %d\r\nAngular width: %d\r\nLinear width (cm): %d\r\n", obst->all_object_index, obst->closest_obj_position, obst->closest_obj_dist_SONAR, obst->closest_obj_dist_IR, obst->closest_obj_angular_size, obst->closest_obj_linear_size, obst->smallest_obj_position, obst->smallest_obj_dist_SONAR, obst->smallest_obj_dist_IR, obst->smallest_obj_angular_size, obst->smallest_obj_linear_size);
 		send_message(buffer);
 	} else {
 		send_message("\r\nNo objects found\r\n");
 	}
+}
+
+char find_dupilicate(obstacle* obst, robot* bot) {
+	char validation = 0;
+	
+	for (int i = 0; i < obst->all_object_index; i++) {
+		int sonardistance = (obst->start_dist_SONAR + obst->end_dist_SONAR) / 2;
+		int width = get_linear_width(obst);
+		int poisition = (obst->start_angle_IR + (obst->all_objects_array[obst->all_object_index][ALL_ANGULAR_WIDTH] / 2));
+		
+		if(sonardistance <  obst->all_objects_array[i][ALL_DISTANCE_SONAR] - 5 || obst->all_objects_array[i][ALL_DISTANCE_SONAR] + 5 < sonardistance)
+			validation++;
+		
+		if(width <  obst->all_objects_array[i][ALL_LINEAR_WIDTH] - 5 || obst->all_objects_array[i][ALL_LINEAR_WIDTH] + 5 < width)
+			validation++;
+		
+		if(poisition <  obst->all_objects_array[i][ALL_POSITION] - 5 || obst->all_objects_array[i][ALL_POSITION] + 5 < poisition)
+			validation++;
+		
+		if (validation == 3)
+			return 0;
+		
+		validation = 0;
+	}
+	return 1;
 }

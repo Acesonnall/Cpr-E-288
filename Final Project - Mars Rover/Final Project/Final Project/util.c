@@ -157,9 +157,9 @@ float read_PING_distance() {
 /* Servo Program                                                        */			//currently calibrated for robot 3
 /************************************************************************/
 #define TOP (16000000/(8 * 1000)) * 21.5                 // pulse period in cycles; (clock_frequency/(prescaler * 1000)) * pulse period
-#define ZERO ((16000000/(8 * 1000)) * 1) * .5075         // 1 ms pulse - clockwise far end; ((16000000/(8 * 1000)) * 1ms) * .5075 (0.4 for Robot 3) calibration
-#define NINTY ((16000000/(8 * 1000)) * 1.5) * .9397      // 1.5 ms pulse - center position; ((16000000/(8 * 1000)) * 1.5ms) * .9397 (0.816666 for Robot 3) calibration
-#define ONE_EIGHTY ((16000000/(8 * 1000)) * 2) * 1.1362  // 2 ms pulse - counterclockwise far end; ((16000000/(8 * 1000)) * 2ms) * 1.1362 (1.0375 for Robot 3) calibration
+#define ZERO ((16000000/(8 * 1000)) * 1) * 0.45         // 1 ms pulse - clockwise far end; ((16000000/(8 * 1000)) * 1ms) * .5075 (0.4 for bot 3; 0.45 for bot 17) calibration
+#define NINTY ((16000000/(8 * 1000)) * 1.5) * 0.8833      // 1.5 ms pulse - center position; ((16000000/(8 * 1000)) * 1.5ms) * .9397 (0.816666 for bot 3; 0.8833 for bot 17) calibration
+#define ONE_EIGHTY ((16000000/(8 * 1000)) * 2) * 1.0875  // 2 ms pulse - counterclockwise far end; ((16000000/(8 * 1000)) * 2ms) * 1.1362 (1.0375 for bot 3; 1.0875 for bot 17) calibration
 
 void servo_timer_init() {
 	TCCR3A = 0b00100011; //set COM and WGM
