@@ -31,7 +31,6 @@ void initializations(obstacle* obst, robot* bot, control* c) {
 	obst->start_angle_IR = 0.0;
 	obst->end_angle_IR = 0.0;
 	obst->object_detected = 0.0; // Using ^= to toggle breaks program if used a lot. Why?
-	//obst->all_object_index = 0.0;
 	obst->cur_obj_size_IR = 20.0;
 	
 	/* SONAR Variable Initializations */
@@ -74,6 +73,14 @@ void initializations(obstacle* obst, robot* bot, control* c) {
 	for (int i = 0; i < c->s1_num_notes; i++) {
 		c->s1_notes[i] = 36;
 		c->s1_duration[i] = 15;
+	}
+	
+	c->s2_id = 2;
+	c->s2_num_notes = 96;
+	char note = 31;
+	for (int i = 0; i < c->s2_num_notes; i++) {
+		c->s2_notes[i] =  note++;
+		c->s2_duration[i] = 10;
 	}
 	
 	/* Goal Post Variables to Analyze */
@@ -128,33 +135,53 @@ char get_linear_width(obstacle* obst) {
 }
 
 void update_information(obstacle* obst, robot* bot, oi_t* self) {
-	char buffer[50];
-	bot->x = bot->x + bot->dist_traveled * cos(bot->angle * (3.141516/180)); // Update robot x coordinate
-	bot->y = bot->y + bot->dist_traveled * sin(bot->angle * (3.141516/180)); // Update robot y coordinate
+	char buffer[500];
+	bot->x += bot->dist_traveled * cos(bot->angle * (3.141516/180)); // Update robot x coordinate
+	bot->y += bot->dist_traveled * sin(bot->angle * (3.141516/180)); // Update robot y coordinate
 	
 	if (obst->all_object_index > 0) { // Are there objects to keep track of? If so, update the objects distance and angle in respect to the robot
 		for (int i = 0; i < obst->all_object_index; i++) { // Loop through total detected objects
 			obst->all_objects_array[i][ALL_DISTANCE_SONAR] = sqrt( pow(bot->x - obst->all_objects_array[i][ALL_X], 2) + pow(bot->y - obst->all_objects_array[i][ALL_Y], 2) ); // Apply distance formula
 			
-			if (obst->all_objects_array[i][ALL_X] < 0 || (obst->all_objects_array[i][ALL_X] < 0 && obst->all_objects_array[i][ALL_Y] < 0) ) { // Quadrant II or Quadrant III: Add 180°
+			if (obst->all_objects_array[i][ALL_X] - bot->x < 0 || (obst->all_objects_array[i][ALL_X] - bot->x < 0 && obst->all_objects_array[i][ALL_Y] - bot->y < 0) ) { // Quadrant II or Quadrant III: Add 180°
 				obst->all_objects_array[i][ALL_POSITION] = atan( ((obst->all_objects_array[i][ALL_Y] - bot->y) / (obst->all_objects_array[i][ALL_X] - bot->x))) * (180/3.141516) + 180; // Apply formula (arctan ( y / x )) to find theta
-			} else if (obst->all_objects_array[i][ALL_Y] < 0 && obst->all_objects_array[i][ALL_X] > 0) {                                      // Quadrant IV: Add 360°
+				} else if ((obst->all_objects_array[i][ALL_Y] - bot->y) < 0 && obst->all_objects_array[i][ALL_X] - bot->x > 0) {                                      // Quadrant IV: Add 360°
 				obst->all_objects_array[i][ALL_POSITION] = atan( ((obst->all_objects_array[i][ALL_Y] - bot->y) / (obst->all_objects_array[i][ALL_X] - bot->x))) * (180/3.141516) + 360; // Apply formula (arctan ( y / x )) to find theta
-			} else {                                                                                                                          // Quadrant I: Use calculator 
+				} else {                            // Quadrant I: Use calculator
 				obst->all_objects_array[i][ALL_POSITION] = atan( ((obst->all_objects_array[i][ALL_Y] - bot->y) / (obst->all_objects_array[i][ALL_X] - bot->x))) * (180/3.141516);       // Apply formula (arctan ( y / x )) to find theta
 			}
-			
-			if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] > SMALL_OBJECT_SIZE_MAX) {
+			if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] == CLIFF) {
+				sprintf(buffer, "\r\nCliff %d Coordinates: (%lf, %lf)\r\n", i, obst->all_objects_array[i][ALL_X], obst->all_objects_array[i][ALL_Y]);
+				send_message(buffer);
+				sprintf(buffer, "\r\nCliff %d Distance: %lf | Position %lf", i, obst->all_objects_array[i][ALL_DISTANCE_SONAR], obst->all_objects_array[i][ALL_POSITION]);
+				send_message(buffer);
+			} else if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] == WHITE) {
+				sprintf(buffer, "\r\nWhite Tape %d Coordinates: (%lf, %lf)\r\n", i, obst->all_objects_array[i][ALL_X], obst->all_objects_array[i][ALL_Y]);
+				send_message(buffer);
+				sprintf(buffer, "\r\nWhite Tape %d Distance: %lf | Position %lf", i, obst->all_objects_array[i][ALL_DISTANCE_SONAR], obst->all_objects_array[i][ALL_POSITION]);
+				send_message(buffer);
+			} else if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] == RED) {
+				sprintf(buffer, "\r\nRed Tape %d Coordinates: (%lf, %lf)\r\n", i, obst->all_objects_array[i][ALL_X], obst->all_objects_array[i][ALL_Y]);
+				send_message(buffer);
+				sprintf(buffer, "\r\nRed Tape %d Distance: %lf | Position %lf", i, obst->all_objects_array[i][ALL_DISTANCE_SONAR], obst->all_objects_array[i][ALL_POSITION]);
+				send_message(buffer);
+			} else if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] == FLAT) {
+				sprintf(buffer, "\r\nFlat Object %d Coordinates: (%lf, %lf)\r\n", i, obst->all_objects_array[i][ALL_X], obst->all_objects_array[i][ALL_Y]);
+				send_message(buffer);
+				sprintf(buffer, "\r\nFlat Object %d Distance: %lf | Position %lf", i, obst->all_objects_array[i][ALL_DISTANCE_SONAR], obst->all_objects_array[i][ALL_POSITION]);
+				send_message(buffer);
+			} else if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] < 100 && obst->all_objects_array[i][ALL_LINEAR_WIDTH] > SMALL_OBJECT_SIZE_MAX) {
 				sprintf(buffer, "\r\nObstacle %d Coordinates: (%lf, %lf)\r\n", i, obst->all_objects_array[i][ALL_X], obst->all_objects_array[i][ALL_Y]);
 				send_message(buffer);
 				sprintf(buffer, "\r\nObstacle %d Distance: %lf | Position %lf", i, obst->all_objects_array[i][ALL_DISTANCE_SONAR], obst->all_objects_array[i][ALL_POSITION]);
 				send_message(buffer);
-			} else {
+			} else if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] < SMALL_OBJECT_SIZE_MAX) {
 				sprintf(buffer, "\r\nGoal Post %d Coordinates: (%lf, %lf)\r\n", i, obst->all_objects_array[i][ALL_X], obst->all_objects_array[i][ALL_Y]);
 				send_message(buffer);
 				sprintf(buffer, "\r\nGoal Post %d Distance: %lf | Position %lf", i, obst->all_objects_array[i][ALL_DISTANCE_SONAR], obst->all_objects_array[i][ALL_POSITION]);
 				send_message(buffer);
 			}
+			
 		}
 	}
 	
@@ -169,11 +196,23 @@ void reset(obstacle* obst, robot* bot, control* c) {
 	obst->degrees = 0.0;
 	move_servo(&obst->degrees);
 	initializations(obst, bot, c); // reinitialize
-	/*for (int i = 0; i < 15; i++) { // reset object arrays
+}
+
+void reset_object_array(obstacle* obst) {
+	obst->all_object_index = 0.0;
+	
+	for (int i = 0; i < 15; i++) { // reset object arrays
 		for (int j = 0; j < 7; j++) {
 			obst->all_objects_array[i][j] = 0;
 		}
-	}*/
+	}
+}
+
+void reinitialize_bot(robot* bot) {
+	bot->x = 0.0;
+	bot->y = 0.0;
+	bot->angle = 90.0;
+	bot->dist_traveled = 0.0;
 }
 
 void find_objs_IR(obstacle* obst, robot* bot) {
@@ -188,7 +227,7 @@ void find_objs_IR(obstacle* obst, robot* bot) {
 			obst->total_dist_IR += obst->cur_dist_IR; // Find total distance measured by IR
 		}
 		} else {
-		if ((obst->object_detected == 1 && obst->validation_level >= SMALL_OBJECT_SIZE_MIN) && find_dupilicate(obst, bot)) { // We've finished seeing the object. Is the object valid (at least as big as smallest object size)?
+		if ((obst->object_detected == 1 && obst->validation_level >= SMALL_OBJECT_SIZE_MIN)) { // We've finished seeing the object. Is the object valid (at least as big as smallest object size)?
 			obst->end_angle_IR = obst->degrees - 1; // Log the last measured angle
 			obst->end_dist_SONAR = obst->last_dist_SONAR; // Log the last distance measured by the sonar as end distance (same reason as before)
 			obst->object_detected = 0; // Reset detection variable
@@ -197,7 +236,7 @@ void find_objs_IR(obstacle* obst, robot* bot) {
 			obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_IR] = obst->total_dist_IR / (obst->validation_level - 1); // IR Distance = Average = Sum/N (total distance/number of distance measurements), where validation level serves as N - 1 (to account for extra sample at line 113)
 			obst->all_objects_array[obst->all_object_index][ALL_LINEAR_WIDTH] = get_linear_width(obst); // Log calculated linear width
 			obst->all_objects_array[obst->all_object_index][ALL_POSITION] = (obst->start_angle_IR + (obst->all_objects_array[obst->all_object_index][ALL_ANGULAR_WIDTH] / 2)); // Log calculated object angular position
-			if (bot->angle - 90 + obst->all_objects_array[obst->all_object_index][ALL_POSITION] > 360) {
+			if (bot->angle - 90 + obst->all_objects_array[obst->all_object_index][ALL_POSITION] > 360) { // Account for overflow
 				obst->all_objects_array[obst->all_object_index][ALL_X] = bot->x + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * cos((bot->angle - 90 + obst->all_objects_array[obst->all_object_index][ALL_POSITION] - 360) * (3.141516/180));
 				obst->all_objects_array[obst->all_object_index][ALL_Y] = bot->y + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * sin((bot->angle - 90 + obst->all_objects_array[obst->all_object_index][ALL_POSITION]) * (3.141516/180));
 			} else {
@@ -205,6 +244,10 @@ void find_objs_IR(obstacle* obst, robot* bot) {
 				obst->all_objects_array[obst->all_object_index][ALL_Y] = bot->y + obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * sin((bot->angle - 90 + obst->all_objects_array[obst->all_object_index][ALL_POSITION]) * (3.141516/180)); // Assign Y coordinate of object in respect to the bot	
 			}
 			obst->all_object_index++; // Move to next index
+			
+			if (obst->all_object_index > 1)
+				find_dupilicate(obst, bot);
+			
 			obst->validation_level = 0; // Reset validation level
 		}
 		else if (obst->object_detected == 1) { // Object is an anomaly. Reset last logged variables.
@@ -253,27 +296,24 @@ void print_and_process_stats(obstacle* obst) {
 	}
 }
 
-char find_dupilicate(obstacle* obst, robot* bot) {
+void find_dupilicate(obstacle* obst, robot* bot){
 	char validation = 0;
-	
-	for (int i = 0; i < obst->all_object_index; i++) {
-		int sonardistance = (obst->start_dist_SONAR + obst->end_dist_SONAR) / 2;
-		int width = get_linear_width(obst);
-		int poisition = (obst->start_angle_IR + (obst->all_objects_array[obst->all_object_index][ALL_ANGULAR_WIDTH] / 2));
-		
-		if(sonardistance <  obst->all_objects_array[i][ALL_DISTANCE_SONAR] - 5 || obst->all_objects_array[i][ALL_DISTANCE_SONAR] + 5 < sonardistance)
+	for (int i = 0; i < obst->all_object_index - 1; i++) {
+		if (((obst->all_objects_array[i][ALL_X] - 8.5) < obst->all_objects_array[obst->all_object_index-1][ALL_X]) && ((obst->all_objects_array[i][ALL_X] + 8.5) > obst->all_objects_array[obst->all_object_index-1][ALL_X]))
+			validation++;
+
+		if (((obst->all_objects_array[i][ALL_Y] - 8.5) < obst->all_objects_array[obst->all_object_index-1][ALL_Y]) && ((obst->all_objects_array[i][ALL_Y] + 8.5) > obst->all_objects_array[obst->all_object_index-1][ALL_Y]))
 			validation++;
 		
-		if(width <  obst->all_objects_array[i][ALL_LINEAR_WIDTH] - 5 || obst->all_objects_array[i][ALL_LINEAR_WIDTH] + 5 < width)
+		if (((obst->all_objects_array[i][ALL_POSITION] - 8.5) < obst->all_objects_array[obst->all_object_index-1][ALL_POSITION]) && ((obst->all_objects_array[i][ALL_POSITION] + 8.5) > obst->all_objects_array[obst->all_object_index-1][ALL_POSITION]))
 			validation++;
 		
-		if(poisition <  obst->all_objects_array[i][ALL_POSITION] - 5 || obst->all_objects_array[i][ALL_POSITION] + 5 < poisition)
+		if (((obst->all_objects_array[i][ALL_DISTANCE_SONAR] - 8.5) < obst->all_objects_array[obst->all_object_index-1][ALL_DISTANCE_SONAR]) && ((obst->all_objects_array[i][ALL_DISTANCE_SONAR] + 8.5) > obst->all_objects_array[obst->all_object_index-1][ALL_DISTANCE_SONAR]))
 			validation++;
 		
-		if (validation == 3)
-			return 0;
-		
+		if (validation == 4) {
+			obst->all_object_index--;
+		}
 		validation = 0;
 	}
-	return 1;
 }

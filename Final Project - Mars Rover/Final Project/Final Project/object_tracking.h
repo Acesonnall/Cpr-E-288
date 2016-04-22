@@ -33,6 +33,15 @@
 #define ALL_X 5
 #define ALL_Y 6
 
+/* Definitions for Cliff & Bumper Sensors */
+#define LEFT 1
+#define MIDDLE 2
+#define RIGHT 3
+#define CLIFF 100
+#define WHITE 105
+#define RED 110
+#define FLAT 115
+
 /* Definitions for Goal Post Array Column Indices
 #define GOALP_DISTANCE 0
 #define GOALP_POSITION 1
@@ -120,6 +129,13 @@ typedef struct {
 	unsigned char s1_num_notes : 2;
 	unsigned char s1_notes[3];
 	unsigned char s1_duration[3];
+	
+	/* Song 2 */
+	unsigned char s2_id : 2;
+	unsigned char s2_num_notes : 7;
+	unsigned char s2_notes[96];
+	unsigned char s2_duration[96];
+	
 } control;
 
 /************************************************************************/
@@ -175,4 +191,8 @@ void find_closest_obj(obstacle* obst);
 /************************************************************************/
 void print_and_process_stats(obstacle* obst);
 
-char find_dupilicate(obstacle* obst, robot* bot);
+void find_dupilicate(obstacle* obst, robot* bot);
+
+void reset_object_array(obstacle* obst);
+
+void reinitialize_bot(robot* bot);
