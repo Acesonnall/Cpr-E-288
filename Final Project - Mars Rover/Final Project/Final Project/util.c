@@ -4,8 +4,10 @@
  * For an overview of how timer based interrupts work, see
  * page 111 and 133-137 of the Atmel Mega128 User Guide
  *
- * @author Zhao Zhang & Chad Nelson
+ * @author Zhao Zhang, Chad Nelson, Omar Taylor, Dalton Handel, Louis Hamilton, Souparni Agnihotri
  * @date 06/26/2012
+ * 
+ * Updated in 2016
  */
 
 #include <avr/io.h>
@@ -154,7 +156,7 @@ float read_PING_distance() {
 /////////////////////////////////////////////////////////////////////////
 
 /************************************************************************/
-/* Servo Program                                                        */			//currently calibrated for robot 3
+/* Servo Program                                                        */
 /************************************************************************/
 #define TOP (16000000/(8 * 1000)) * 21.5                 // pulse period in cycles; (clock_frequency/(prescaler * 1000)) * pulse period
 #define ZERO ((16000000/(8 * 1000)) * 1) * 0.45         // 1 ms pulse - clockwise far end; ((16000000/(8 * 1000)) * 1ms) * .5075 (0.4 for bot 3; 0.45 for bot 17; 0.35 for bot 12; 0.59 for bot 11) calibration

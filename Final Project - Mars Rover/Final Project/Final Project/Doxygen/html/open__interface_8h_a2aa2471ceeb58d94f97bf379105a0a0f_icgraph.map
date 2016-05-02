@@ -1,0 +1,4 @@
+<map id="oi_load_song" name="oi_load_song">
+<area shape="rect" id="node2" href="$main_8h.html#aafe771d8afb43c6c388fadf5ed8b51d4" title="Moves the robot a specified distance. Written by Dalton and improved upon by Omar and Louis..." alt="" coords="152,5,204,32"/>
+<area shape="rect" id="node3" href="$main_8h.html#acf284c0fd17507c44b7c4856054ea379" title="Receives a command from the operator. Written by Omar. " alt="" coords="252,31,356,57"/>
+</map>

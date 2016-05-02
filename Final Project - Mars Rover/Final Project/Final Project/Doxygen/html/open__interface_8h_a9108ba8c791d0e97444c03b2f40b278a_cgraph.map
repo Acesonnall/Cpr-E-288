@@ -1,0 +1,9 @@
+<map id="oi_init" name="oi_init">
+<area shape="rect" id="node2" href="$open__interface_8h.html#afb384efe98529a12f6293af066381cd5" title="Transmit a byte of data over the serial connection to the Create. " alt="" coords="245,24,328,51"/>
+<area shape="rect" id="node3" href="$util_8h.html#a81f8b753fa3af751d39ae3ffdddb5bbd" title="Blocks for a specified number of milliseconds. " alt="" coords="251,125,322,152"/>
+<area shape="rect" id="node6" href="$open__interface_8h.html#a53fa762ab03f4b109f3f687180f62ba6" title="Set the LEDS on the Create. " alt="" coords="109,24,197,51"/>
+<area shape="rect" id="node7" href="$open__interface_8h.html#a9129559bba5ff9dc7e4df64330864674" title="Update the Create. This will update all the sensor data. " alt="" coords="114,75,193,101"/>
+<area shape="rect" id="node4" href="$util_8h.html#aa1d8b4ca2abff18a392fb1a60405badb" title="Start timer2. " alt="" coords="376,100,467,127"/>
+<area shape="rect" id="node5" href="$util_8h.html#a0730547d803aa5321ee1c421597d85bb" title="Stop timer2. " alt="" coords="376,151,467,177"/>
+<area shape="rect" id="node8" href="$open__interface_8h.html#a3147d041ba8ea3524f0fbefbfa487e38" title="Receive a byte of data from the Create serial connection. Blocks until a byte is received. " alt="" coords="245,75,328,101"/>
+</map>

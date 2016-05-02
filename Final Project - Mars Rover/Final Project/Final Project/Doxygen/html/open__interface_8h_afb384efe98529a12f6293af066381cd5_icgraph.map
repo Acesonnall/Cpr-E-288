@@ -1,0 +1,12 @@
+<map id="oi_byte_tx" name="oi_byte_tx">
+<area shape="rect" id="node2" href="$open__interface_8h.html#a9108ba8c791d0e97444c03b2f40b278a" title="Initialize the Create. This must be called first. " alt="" coords="288,56,344,83"/>
+<area shape="rect" id="node3" href="$open__interface_8h.html#a9129559bba5ff9dc7e4df64330864674" title="Update the Create. This will update all the sensor data. " alt="" coords="149,107,227,133"/>
+<area shape="rect" id="node7" href="$open__interface_8h.html#a53fa762ab03f4b109f3f687180f62ba6" title="Set the LEDS on the Create. " alt="" coords="144,5,232,32"/>
+<area shape="rect" id="node8" href="$open__interface_8h.html#a2dfa9fddb3b143e74605cc2f1ba7544c" title="Set direction and speed of the robot&#39;s wheels. " alt="" coords="136,157,240,184"/>
+<area shape="rect" id="node9" href="$open__interface_8h.html#a2aa2471ceeb58d94f97bf379105a0a0f" title="Load song sequence. " alt="" coords="139,259,237,285"/>
+<area shape="rect" id="node10" href="$open__interface_8h.html#a353765c4297939ef0390a47ca869af56" title="Play song. " alt="" coords="139,208,237,235"/>
+<area shape="rect" id="node11" href="$open__interface_8h.html#a6c701c5d6642b0f7128b03542a09ed76" title="Runs default go charge program; robot will search for dock. " alt="" coords="147,309,229,336"/>
+<area shape="rect" id="node4" href="$main_8h.html#aafe771d8afb43c6c388fadf5ed8b51d4" title="Moves the robot a specified distance. Written by Dalton and improved upon by Omar and Louis..." alt="" coords="290,157,342,184"/>
+<area shape="rect" id="node6" href="$main_8h.html#a021727f181f979e2fa16323b0e1e7e1b" title="Rotates the robot a specified angle. Written by Dalton. " alt="" coords="289,107,343,133"/>
+<area shape="rect" id="node5" href="$main_8h.html#acf284c0fd17507c44b7c4856054ea379" title="Receives a command from the operator. Written by Omar. " alt="" coords="392,183,496,209"/>
+</map>

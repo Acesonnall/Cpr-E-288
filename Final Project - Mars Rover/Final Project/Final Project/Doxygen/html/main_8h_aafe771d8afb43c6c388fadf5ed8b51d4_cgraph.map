@@ -1,0 +1,13 @@
+<map id="move" name="move">
+<area shape="rect" id="node2" href="$open__interface_8h.html#a2dfa9fddb3b143e74605cc2f1ba7544c" title="Set direction and speed of the robot&#39;s wheels. " alt="" coords="105,5,209,32"/>
+<area shape="rect" id="node4" href="$util_8h.html#a81f8b753fa3af751d39ae3ffdddb5bbd" title="Blocks for a specified number of milliseconds. " alt="" coords="289,208,359,235"/>
+<area shape="rect" id="node7" href="$main_8h.html#a3fa3bef8983bf9c937d433496181134c" title="Logs position of hazards undetected by the infrared and sonar sensor. Written by Louis. " alt="" coords="112,259,203,285"/>
+<area shape="rect" id="node9" href="$open__interface_8h.html#a2aa2471ceeb58d94f97bf379105a0a0f" title="Load song sequence. " alt="" coords="108,56,207,83"/>
+<area shape="rect" id="node10" href="$open__interface_8h.html#a353765c4297939ef0390a47ca869af56" title="Play song. " alt="" coords="108,107,207,133"/>
+<area shape="rect" id="node11" href="$open__interface_8h.html#a9129559bba5ff9dc7e4df64330864674" title="Update the Create. This will update all the sensor data. " alt="" coords="118,157,197,184"/>
+<area shape="rect" id="node3" href="$open__interface_8h.html#afb384efe98529a12f6293af066381cd5" title="Transmit a byte of data over the serial connection to the Create. " alt="" coords="283,81,365,108"/>
+<area shape="rect" id="node5" href="$util_8h.html#aa1d8b4ca2abff18a392fb1a60405badb" title="Start timer2. " alt="" coords="439,183,529,209"/>
+<area shape="rect" id="node6" href="$util_8h.html#a0730547d803aa5321ee1c421597d85bb" title="Stop timer2. " alt="" coords="439,233,529,260"/>
+<area shape="rect" id="node8" href="$main_8h.html#ad7cd2d9b641053042765e05818c1bf85" title="Helper method for log_position. Written by Louis. " alt="" coords="257,259,391,285"/>
+<area shape="rect" id="node12" href="$open__interface_8h.html#a3147d041ba8ea3524f0fbefbfa487e38" title="Receive a byte of data from the Create serial connection. Blocks until a byte is received. " alt="" coords="283,157,365,184"/>
+</map>

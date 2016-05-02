@@ -1,0 +1,5 @@
+<map id="find_dupilicate" name="find_dupilicate">
+<area shape="rect" id="node2" href="$object__tracking_8h.html#ab037ccc57315a736ee9c58ac33270dad" title="Find any objects and log their stats in the object array. Written by Omar. " alt="" coords="157,5,249,32"/>
+<area shape="rect" id="node3" href="$object__tracking_8h.html#a5b4c35785ef6f5c02f3b7c1fc606a69e" title="Performs a sweep to detect the closest objects. Written by Omar. " alt="" coords="297,5,356,32"/>
+<area shape="rect" id="node4" href="$main_8h.html#acf284c0fd17507c44b7c4856054ea379" title="Receives a command from the operator. Written by Omar. " alt="" coords="404,5,508,32"/>
+</map>

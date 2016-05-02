@@ -2,7 +2,7 @@
  * object_tracking.c
  *
  * Created: 3/28/2016 1:04:20 PM
- *  Author: Omar Taylor
+ *  Author: Omar Taylor, Dalton Handel, Louis Hamilton, Souparni Agnihotri
  */ 
 
 #include <avr/io.h>
@@ -31,7 +31,6 @@ void initializations(obstacle* obst, robot* bot, control* c) {
 	obst->start_angle_IR = 0.0;
 	obst->end_angle_IR = 0.0;
 	obst->object_detected = 0.0; // Using ^= to toggle breaks program if used a lot. Why?
-	obst->cur_obj_size_IR = 20.0;
 	
 	/* SONAR Variable Initializations */
 	obst->cur_dist_SONAR = 0.0;
@@ -83,12 +82,6 @@ void initializations(obstacle* obst, robot* bot, control* c) {
 		c->s2_duration[i] = 10;
 	}
 	
-	/* Goal Post Variables to Analyze */
-	obst->goal_post_index = 0; // Amount of goal posts found. There are 4 posts total so 3 bits will suffice.
-	
-	/*Obstacle Variables to Analyze
-	obst->obst_index = 0; // Amount of goal posts found. There are 4 posts total so 3 bits will suffice.*/
-	
 	// Note: Object array does not need to be initialized
 }
 
@@ -120,9 +113,6 @@ void sweep(obstacle* obst, robot* bot) {
 		wait_ms(10);          // Wait for servo to position itself
 	}
 	
-	/* Analyze Found Objects */
-	//analyze_found_objects(obst);
-	
 	/* Find Smallest Object */
 	find_smallest_obj(obst);
 	
@@ -134,7 +124,7 @@ char get_linear_width(obstacle* obst) {
 	return 2 * obst->all_objects_array[obst->all_object_index][ALL_DISTANCE_SONAR] * tan((obst->all_objects_array[obst->all_object_index][ALL_ANGULAR_WIDTH] * (3.141516/180)) / 2); // sin((3.141516/180) * obst->object_array[obst->object_index][ANGULAR_WIDTH]) * obst->object_array[obst->object_index][DISTANCE_SONAR];
 }
 
-void update_information(obstacle* obst, robot* bot, oi_t* self) {
+void update_information(obstacle* obst, robot* bot) {
 	char buffer[500];
 	bot->x += bot->dist_traveled * cos(bot->angle * (3.141516/180)); // Update robot x coordinate
 	bot->y += bot->dist_traveled * sin(bot->angle * (3.141516/180)); // Update robot y coordinate
@@ -190,12 +180,6 @@ void update_information(obstacle* obst, robot* bot, oi_t* self) {
 	
 	// Do not reset the angle. Bot needs to know where it was last angled to be accurate.
 	bot->dist_traveled = 0; // Reset for next run
-}
-
-void reset(obstacle* obst, robot* bot, control* c) {
-	obst->degrees = 0.0;
-	move_servo(&obst->degrees);
-	initializations(obst, bot, c); // reinitialize
 }
 
 void reset_object_array(obstacle* obst) {

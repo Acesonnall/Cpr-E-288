@@ -1,0 +1,32 @@
+<map id="get_command" name="get_command">
+<area shape="rect" id="node2" href="$main_8h.html#aafe771d8afb43c6c388fadf5ed8b51d4" title="Moves the robot a specified distance. Written by Dalton and improved upon by Omar and Louis..." alt="" coords="197,157,249,184"/>
+<area shape="rect" id="node10" href="$open__interface_8h.html#a2aa2471ceeb58d94f97bf379105a0a0f" title="Load song sequence. " alt="" coords="357,107,456,133"/>
+<area shape="rect" id="node11" href="$open__interface_8h.html#a353765c4297939ef0390a47ca869af56" title="Play song. " alt="" coords="357,5,456,32"/>
+<area shape="rect" id="node14" href="$main_8h.html#a021727f181f979e2fa16323b0e1e7e1b" title="Rotates the robot a specified angle. Written by Dalton. " alt="" coords="195,208,250,235"/>
+<area shape="rect" id="node15" href="$object__tracking_8h.html#a5b4c35785ef6f5c02f3b7c1fc606a69e" title="Performs a sweep to detect the closest objects. Written by Omar. " alt="" coords="193,436,252,463"/>
+<area shape="rect" id="node28" href="$object__tracking_8h.html#ab377fc3001fa7284d1290bc681477bea" title="Prepares LCD, IR, SONAR, Servo, USART, and object detection structure. Written by Omar..." alt="" coords="175,487,270,513"/>
+<area shape="rect" id="node29" href="$object__tracking_8h.html#a46ba0d97c019e7458080eca9267ca045" title="Resets the object array. Written by Omar. " alt="" coords="158,537,287,564"/>
+<area shape="rect" id="node30" href="$object__tracking_8h.html#a5c38c09e029689d30aebc2fdfd46c588" title="Resets the robot. Written by Omar. " alt="" coords="170,588,275,615"/>
+<area shape="rect" id="node31" href="$object__tracking_8h.html#a551ce4af37347b5ea1404a3c2d32722a" title="Updates the information of detected obstacles and the robot. Written by Omar and Louis. " alt="" coords="157,664,288,691"/>
+<area shape="rect" id="node3" href="$open__interface_8h.html#a2dfa9fddb3b143e74605cc2f1ba7544c" title="Set direction and speed of the robot&#39;s wheels. " alt="" coords="355,157,459,184"/>
+<area shape="rect" id="node5" href="$util_8h.html#a81f8b753fa3af751d39ae3ffdddb5bbd" title="Blocks for a specified number of milliseconds. " alt="" coords="557,284,627,311"/>
+<area shape="rect" id="node8" href="$main_8h.html#a3fa3bef8983bf9c937d433496181134c" title="Logs position of hazards undetected by the infrared and sonar sensor. Written by Louis. " alt="" coords="361,56,452,83"/>
+<area shape="rect" id="node12" href="$open__interface_8h.html#a9129559bba5ff9dc7e4df64330864674" title="Update the Create. This will update all the sensor data. " alt="" coords="367,208,446,235"/>
+<area shape="rect" id="node4" href="$open__interface_8h.html#afb384efe98529a12f6293af066381cd5" title="Transmit a byte of data over the serial connection to the Create. " alt="" coords="551,132,633,159"/>
+<area shape="rect" id="node6" href="$util_8h.html#aa1d8b4ca2abff18a392fb1a60405badb" title="Start timer2. " alt="" coords="707,259,797,285"/>
+<area shape="rect" id="node7" href="$util_8h.html#a0730547d803aa5321ee1c421597d85bb" title="Stop timer2. " alt="" coords="707,309,797,336"/>
+<area shape="rect" id="node9" href="$main_8h.html#ad7cd2d9b641053042765e05818c1bf85" title="Helper method for log_position. Written by Louis. " alt="" coords="525,56,659,83"/>
+<area shape="rect" id="node13" href="$open__interface_8h.html#a3147d041ba8ea3524f0fbefbfa487e38" title="Receive a byte of data from the Create serial connection. Blocks until a byte is received. " alt="" coords="551,208,633,235"/>
+<area shape="rect" id="node16" href="$util_8h.html#a6f45b81e4d64dfe7cc7f6ec338a87a64" title="Calls USART_Transmit for each character in the array. Written by Omar. " alt="" coords="351,715,462,741"/>
+<area shape="rect" id="node18" href="$util_8h.html#ace353e57925111137929ec1b9635bd1b" title="Pulses the SONAR sensor. " alt="" coords="363,563,451,589"/>
+<area shape="rect" id="node19" href="$util_8h.html#a29bfff7abed2515ad0fa3596f8939b88" title="Converts the ADC value to centimeters. Written by Dalton and improved upon by Omar. " alt="" coords="345,613,468,640"/>
+<area shape="rect" id="node21" href="$util_8h.html#a1812c1bcfd10ae0ff013f3a4c6dc51ef" title="Converts values from the SONAR to centimeters. Written by Dalton and improved upon by Omar..." alt="" coords="336,360,477,387"/>
+<area shape="rect" id="node22" href="$object__tracking_8h.html#ab037ccc57315a736ee9c58ac33270dad" title="Find any objects and log their stats in the object array. Written by Omar. " alt="" coords="361,664,453,691"/>
+<area shape="rect" id="node25" href="$util_8h.html#a83545090a90632cb4df340ee8a3ab423" title="Moves the servo to the by a specified degree. Written by Omar. " alt="" coords="362,411,451,437"/>
+<area shape="rect" id="node26" href="$object__tracking_8h.html#a3dba97bb35e05db55e7821ce09594aeb" title="Finds the smallest object out of the found objects. Written by Omar. " alt="" coords="345,461,468,488"/>
+<area shape="rect" id="node27" href="$object__tracking_8h.html#a48f1ccc56ef139987f09077a3d74f7a0" title="Finds the closest object out of the found objects. Written by Omar. " alt="" coords="349,512,464,539"/>
+<area shape="rect" id="node17" href="$util_8h.html#ab8c416106cf1aff4ccdb3da4860fc179" title="Transmits over serial buffer per character. Enabled by USART_Init. " alt="" coords="531,740,653,767"/>
+<area shape="rect" id="node20" href="$util_8h.html#a75186c51b6b050ef0161a60d101ebfac" title="Reads digitally converted values. Written by Dalton. " alt="" coords="551,588,633,615"/>
+<area shape="rect" id="node23" href="$object__tracking_8h.html#a37b931a43e262f0727099ef0fc08d5fa" title="Finds the linear width of the object detected. Written by Dalton and improved upon by Omar..." alt="" coords="535,639,649,665"/>
+<area shape="rect" id="node24" href="$object__tracking_8h.html#a7ff28b898579f7d84904ee00cc87f636" title="Finding the duplicate object. Written by Louis. " alt="" coords="540,689,644,716"/>
+</map>

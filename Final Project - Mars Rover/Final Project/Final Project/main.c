@@ -1,9 +1,14 @@
 /*
- * Final Project.c
+ * main.c
  *
  * Created: 3/28/2016 2:00:15 PM
  * Author : Omar Taylor, Dalton Handel, Louis Hamilton, Souparni Agnihotri
  */ 
+
+/** 
+* @mainpage
+* Please email omtaylor@iastate.edu for questions.
+*/
 
 #include <avr/io.h>
 #include "object_tracking.h"
@@ -20,7 +25,7 @@ int main(void)
 	robot bot;
     oi_t *sensor_data = oi_alloc();
 	bot.initialized = 0; // Has to be called only once and before reset
-	reset(&obst, &bot, &c);
+	initalizations(&obst, &bot, &c);
     oi_init(sensor_data);
 	
 	while (1) {
@@ -125,7 +130,7 @@ void move(oi_t *self, float distance_mm, obstacle* obst, robot* bot, control c) 
 }
 
 void rotate(oi_t *self, float degrees, robot* bot) {
-		float sensordegrees = degrees/1.1; //calibration: make number smaller to oversteer.
+		float sensordegrees = degrees/1.1; // calibration: make number smaller to oversteer.
 		float toturn = 0;
 		
 		bot->angle += degrees;
@@ -160,10 +165,13 @@ void get_command(control c, obstacle* obst, oi_t *self, robot* bot) {
 		rotate(self, c.angle_to_turn, bot);
 	} else if (c.user_command == 'd') {
 		rotate(self, -c.angle_to_turn, bot);
+	} else if (c.user_command == 's') {
+		rotate(self, 180, bot);
+		move(self, c.travel_dist, obst, bot, c);
 	} else if (c.user_command == 'q') {
 		sweep(obst, bot);
-		//print_and_process_stats(obst);
-		reset(obst, bot, &c);
+		// print_and_process_stats(obst);
+		initalizations(obst, bot, &c);
 	} else if (c.user_command == 'r') {
 		reset_object_array(obst);
 	} else if (c.user_command == 'b') {
@@ -172,12 +180,12 @@ void get_command(control c, obstacle* obst, oi_t *self, robot* bot) {
 		oi_load_song(c.s1_id, c.s1_num_notes, c.s1_notes, c.s1_duration);
 		oi_play_song(c.s1_id);
 	}
-	update_information(obst, bot, self);
+	update_information(obst, bot);
 }
 
 void read_cliff_sensors(oi_t *self) {
 	lprintf("Cliff L: %d\nCliff Front L: %d\nCliff Front R: %d\nCliff R: %d", self->cliff_left_signal, self->cliff_frontleft_signal, self->cliff_frontright_signal, self->cliff_right_signal);
-	//lprintf("Cliff L: %d\nCliff Front L: %d\nCliff Front R: %d\nCliff R: %d", self->cliff_left, self->cliff_frontleft, self->cliff_frontright, self->cliff_right);
+	// lprintf("Cliff L: %d\nCliff Front L: %d\nCliff Front R: %d\nCliff R: %d", self->cliff_left, self->cliff_frontleft, self->cliff_frontright, self->cliff_right);
 	wait_ms(300);
 }
 
@@ -237,33 +245,3 @@ void log_position_helper(obstacle* obst, robot* bot, signed char dist) {
 	obst->all_objects_array[obst->all_object_index][ALL_X] = (bot->x + dist * (cos((bot->angle + 45) * (3.141516/180)))) + (12 + dist) * (cos(bot->angle + 45) * (3.141516/180)); // distance value is 12 (+ 15 to account for when the bot backs up)
 	obst->all_objects_array[obst->all_object_index][ALL_Y] = (bot->y + dist * (sin((bot->angle + 45) * (3.141516/180)))) + (12 + dist) * (sin(bot->angle + 45) * (3.141516/180)); // distance value is 12 (+ 15 to account for when the bot backs up)
 }
-
-/*void rendezvous(obstacle* obst, robot* bot) {
-	char can_complete_rendevous = 0; // 0: No, 1: Yes
-	if (obst->all_object_index > 0) {
-		Fill Goal Post Array
-		for (int i = 0; i < obst->all_object_index; i++) {
-			if (obst->all_objects_array[i][ALL_LINEAR_WIDTH] > SMALL_OBJECT_SIZE_MAX)
-				continue;
-			obst->goal_post_array[obst->goal_post_index][0] = obst->all_objects_array[i][ALL_X];
-			obst->goal_post_array[obst->goal_post_index][1] = obst->all_objects_array[i][ALL_Y];	
-			obst->goal_post_index++;
-		}
-		
-		for (int i = 0; i < obst->all_object_index; i++) {
-			Is There An Object In The Way?
-			if (obst->all_object_index[])
-		}
-		
-	}
-	
-	if (!can_complete_rendevous) {
-		Reset Map
-		for (int i = 0; i < obst->goal_post_index; i++) {
-			obst->goal_post_array[i][0] = 0;
-			obst->goal_post_array[i][1] = 0;
-		}
-		obst->goal_post_index = 0;
-		send_message("\r\nCannot find rendezvous point!\r\n");
-	}
-}*/

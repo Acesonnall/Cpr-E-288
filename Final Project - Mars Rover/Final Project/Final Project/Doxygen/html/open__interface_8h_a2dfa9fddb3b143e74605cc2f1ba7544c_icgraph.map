@@ -1,0 +1,5 @@
+<map id="oi_set_wheels" name="oi_set_wheels">
+<area shape="rect" id="node2" href="$main_8h.html#aafe771d8afb43c6c388fadf5ed8b51d4" title="Moves the robot a specified distance. Written by Dalton and improved upon by Omar and Louis..." alt="" coords="159,5,211,32"/>
+<area shape="rect" id="node4" href="$main_8h.html#a021727f181f979e2fa16323b0e1e7e1b" title="Rotates the robot a specified angle. Written by Dalton. " alt="" coords="157,56,212,83"/>
+<area shape="rect" id="node3" href="$main_8h.html#acf284c0fd17507c44b7c4856054ea379" title="Receives a command from the operator. Written by Omar. " alt="" coords="260,31,364,57"/>
+</map>

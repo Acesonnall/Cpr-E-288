@@ -15,6 +15,10 @@
  * @date 06/26/2012
  */
 
+/*! \file open_interface.h
+    \brief Provides a set of functions for controlling the Create
+*/
+
 #ifndef CREATE_H
 #define CREATE_H
 

@@ -1,0 +1,17 @@
+<map id="sweep" name="sweep">
+<area shape="rect" id="node2" href="$util_8h.html#a6f45b81e4d64dfe7cc7f6ec338a87a64" title="Calls USART_Transmit for each character in the array. Written by Omar. " alt="" coords="127,5,238,32"/>
+<area shape="rect" id="node4" href="$util_8h.html#ace353e57925111137929ec1b9635bd1b" title="Pulses the SONAR sensor. " alt="" coords="139,56,227,83"/>
+<area shape="rect" id="node5" href="$util_8h.html#a81f8b753fa3af751d39ae3ffdddb5bbd" title="Blocks for a specified number of milliseconds. " alt="" coords="327,81,398,108"/>
+<area shape="rect" id="node8" href="$util_8h.html#a29bfff7abed2515ad0fa3596f8939b88" title="Converts the ADC value to centimeters. Written by Dalton and improved upon by Omar. " alt="" coords="121,157,244,184"/>
+<area shape="rect" id="node10" href="$util_8h.html#a1812c1bcfd10ae0ff013f3a4c6dc51ef" title="Converts values from the SONAR to centimeters. Written by Dalton and improved upon by Omar..." alt="" coords="112,208,253,235"/>
+<area shape="rect" id="node11" href="$object__tracking_8h.html#ab037ccc57315a736ee9c58ac33270dad" title="Find any objects and log their stats in the object array. Written by Omar. " alt="" coords="137,259,229,285"/>
+<area shape="rect" id="node14" href="$util_8h.html#a83545090a90632cb4df340ee8a3ab423" title="Moves the servo to the by a specified degree. Written by Omar. " alt="" coords="138,309,227,336"/>
+<area shape="rect" id="node15" href="$object__tracking_8h.html#a3dba97bb35e05db55e7821ce09594aeb" title="Finds the smallest object out of the found objects. Written by Omar. " alt="" coords="121,360,244,387"/>
+<area shape="rect" id="node16" href="$object__tracking_8h.html#a48f1ccc56ef139987f09077a3d74f7a0" title="Finds the closest object out of the found objects. Written by Omar. " alt="" coords="125,411,240,437"/>
+<area shape="rect" id="node3" href="$util_8h.html#ab8c416106cf1aff4ccdb3da4860fc179" title="Transmits over serial buffer per character. Enabled by USART_Init. " alt="" coords="301,5,424,32"/>
+<area shape="rect" id="node6" href="$util_8h.html#aa1d8b4ca2abff18a392fb1a60405badb" title="Start timer2. " alt="" coords="472,56,563,83"/>
+<area shape="rect" id="node7" href="$util_8h.html#a0730547d803aa5321ee1c421597d85bb" title="Stop timer2. " alt="" coords="472,107,563,133"/>
+<area shape="rect" id="node9" href="$util_8h.html#a75186c51b6b050ef0161a60d101ebfac" title="Reads digitally converted values. Written by Dalton. " alt="" coords="322,157,403,184"/>
+<area shape="rect" id="node12" href="$object__tracking_8h.html#a37b931a43e262f0727099ef0fc08d5fa" title="Finds the linear width of the object detected. Written by Dalton and improved upon by Omar..." alt="" coords="305,233,420,260"/>
+<area shape="rect" id="node13" href="$object__tracking_8h.html#a7ff28b898579f7d84904ee00cc87f636" title="Finding the duplicate object. Written by Louis. " alt="" coords="311,284,415,311"/>
+</map>

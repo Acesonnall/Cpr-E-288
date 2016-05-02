@@ -1,0 +1,9 @@
+<map id="rotate" name="rotate">
+<area shape="rect" id="node2" href="$open__interface_8h.html#a2dfa9fddb3b143e74605cc2f1ba7544c" title="Set direction and speed of the robot&#39;s wheels. " alt="" coords="108,5,212,32"/>
+<area shape="rect" id="node4" href="$open__interface_8h.html#a9129559bba5ff9dc7e4df64330864674" title="Update the Create. This will update all the sensor data. " alt="" coords="121,56,199,83"/>
+<area shape="rect" id="node3" href="$open__interface_8h.html#afb384efe98529a12f6293af066381cd5" title="Transmit a byte of data over the serial connection to the Create. " alt="" coords="260,5,343,32"/>
+<area shape="rect" id="node5" href="$open__interface_8h.html#a3147d041ba8ea3524f0fbefbfa487e38" title="Receive a byte of data from the Create serial connection. Blocks until a byte is received. " alt="" coords="260,56,343,83"/>
+<area shape="rect" id="node6" href="$util_8h.html#a81f8b753fa3af751d39ae3ffdddb5bbd" title="Blocks for a specified number of milliseconds. " alt="" coords="266,107,337,133"/>
+<area shape="rect" id="node7" href="$util_8h.html#aa1d8b4ca2abff18a392fb1a60405badb" title="Start timer2. " alt="" coords="391,81,481,108"/>
+<area shape="rect" id="node8" href="$util_8h.html#a0730547d803aa5321ee1c421597d85bb" title="Stop timer2. " alt="" coords="391,132,481,159"/>
+</map>

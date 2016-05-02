@@ -1,0 +1,12 @@
+<map id="read_cliff_sensors" name="read_cliff_sensors">
+<area shape="rect" id="node2" href="$lcd_8h.html#a8a1b81a7de37e8483ceb56c27097dd32" title="Prints a string to the lcd; Google &quot;printf&quot; for documentation. " alt="" coords="180,132,233,159"/>
+<area shape="rect" id="node5" href="$util_8h.html#a81f8b753fa3af751d39ae3ffdddb5bbd" title="Blocks for a specified number of milliseconds. " alt="" coords="457,233,528,260"/>
+<area shape="rect" id="node3" href="$lcd_8h.html#ad235a86241458b1e7b8771688bfdaf9a" title="Clears the LCD. " alt="" coords="300,208,375,235"/>
+<area shape="rect" id="node8" href="$lcd_8h.html#a1b59543ebb020ae74d6bcdf06e2b6d3b" title="Prints one character at the current cursor position. " alt="" coords="302,107,373,133"/>
+<area shape="rect" id="node9" href="$lcd_8h.html#ad2c1324ade2f6bff55337cea3ca5b351" title="Sets character position to second line first position. " alt="" coords="281,56,393,83"/>
+<area shape="rect" id="node10" href="$lcd_8h.html#ad90b0c9fd11ce24e395f07dbe5617b1f" title="Sets character position to third line first position. " alt="" coords="281,157,393,184"/>
+<area shape="rect" id="node11" href="$lcd_8h.html#a55c2a679388a5c8c7314aa4c494a60c6" title="Sets character position to fourth line first position. " alt="" coords="281,5,393,32"/>
+<area shape="rect" id="node4" href="$lcd_8h.html#a1df94c5b595fa706ca7e7d61cad1de86" title="Submits command to LCD controller. " alt="" coords="441,107,544,133"/>
+<area shape="rect" id="node6" href="$util_8h.html#aa1d8b4ca2abff18a392fb1a60405badb" title="Start timer2. " alt="" coords="592,208,683,235"/>
+<area shape="rect" id="node7" href="$util_8h.html#a0730547d803aa5321ee1c421597d85bb" title="Stop timer2. " alt="" coords="592,259,683,285"/>
+</map>

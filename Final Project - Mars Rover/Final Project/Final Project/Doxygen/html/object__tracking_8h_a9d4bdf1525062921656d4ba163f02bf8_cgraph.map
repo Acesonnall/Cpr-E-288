@@ -1,0 +1,4 @@
+<map id="print_and_process_stats" name="print_and_process_stats">
+<area shape="rect" id="node2" href="$util_8h.html#a6f45b81e4d64dfe7cc7f6ec338a87a64" title="Calls USART_Transmit for each character in the array. Written by Omar. " alt="" coords="217,5,328,32"/>
+<area shape="rect" id="node3" href="$util_8h.html#ab8c416106cf1aff4ccdb3da4860fc179" title="Transmits over serial buffer per character. Enabled by USART_Init. " alt="" coords="376,5,499,32"/>
+</map>

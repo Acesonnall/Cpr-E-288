@@ -1,0 +1,5 @@
+<map id="log_position_helper" name="log_position_helper">
+<area shape="rect" id="node2" href="$main_8h.html#a3fa3bef8983bf9c937d433496181134c" title="Logs position of hazards undetected by the infrared and sonar sensor. Written by Louis. " alt="" coords="187,5,277,32"/>
+<area shape="rect" id="node3" href="$main_8h.html#aafe771d8afb43c6c388fadf5ed8b51d4" title="Moves the robot a specified distance. Written by Dalton and improved upon by Omar and Louis..." alt="" coords="325,5,377,32"/>
+<area shape="rect" id="node4" href="$main_8h.html#acf284c0fd17507c44b7c4856054ea379" title="Receives a command from the operator. Written by Omar. " alt="" coords="425,5,529,32"/>
+</map>

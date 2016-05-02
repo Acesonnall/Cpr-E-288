@@ -1,3 +1,7 @@
+/*! \file lcd.h
+    \brief Functions for displaying content to the LCD screen
+*/
+
 /// Initializes PORTA to communicate with LCD controller
 void lcd_init(void);
 

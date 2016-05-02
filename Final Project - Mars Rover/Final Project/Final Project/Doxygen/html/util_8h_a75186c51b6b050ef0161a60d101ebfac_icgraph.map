@@ -1,0 +1,5 @@
+<map id="read_ADC" name="read_ADC">
+<area shape="rect" id="node2" href="$util_8h.html#a29bfff7abed2515ad0fa3596f8939b88" title="Converts the ADC value to centimeters. Written by Dalton and improved upon by Omar. " alt="" coords="135,5,257,32"/>
+<area shape="rect" id="node3" href="$object__tracking_8h.html#a5b4c35785ef6f5c02f3b7c1fc606a69e" title="Performs a sweep to detect the closest objects. Written by Omar. " alt="" coords="305,5,364,32"/>
+<area shape="rect" id="node4" href="$main_8h.html#acf284c0fd17507c44b7c4856054ea379" title="Receives a command from the operator. Written by Omar. " alt="" coords="412,5,516,32"/>
+</map>

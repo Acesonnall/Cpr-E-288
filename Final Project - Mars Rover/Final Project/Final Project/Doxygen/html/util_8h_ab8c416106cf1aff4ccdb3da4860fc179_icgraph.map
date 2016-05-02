@@ -1,0 +1,7 @@
+<map id="USART_Transmit" name="USART_Transmit">
+<area shape="rect" id="node2" href="$util_8h.html#a6f45b81e4d64dfe7cc7f6ec338a87a64" title="Calls USART_Transmit for each character in the array. Written by Omar. " alt="" coords="176,56,287,83"/>
+<area shape="rect" id="node3" href="$object__tracking_8h.html#a5b4c35785ef6f5c02f3b7c1fc606a69e" title="Performs a sweep to detect the closest objects. Written by Omar. " alt="" coords="387,5,446,32"/>
+<area shape="rect" id="node5" href="$object__tracking_8h.html#a551ce4af37347b5ea1404a3c2d32722a" title="Updates the information of detected obstacles and the robot. Written by Omar and Louis. " alt="" coords="351,56,482,83"/>
+<area shape="rect" id="node6" href="$object__tracking_8h.html#a9d4bdf1525062921656d4ba163f02bf8" title="Show and tell, baby. Written by Omar. " alt="" coords="335,107,499,133"/>
+<area shape="rect" id="node4" href="$main_8h.html#acf284c0fd17507c44b7c4856054ea379" title="Receives a command from the operator. Written by Omar. " alt="" coords="547,31,651,57"/>
+</map>
